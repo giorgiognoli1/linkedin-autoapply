@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>John Doe - Professional Resume</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+
+        :root {
+            --primary-blue: #00A1E0;
+            --dark-blue: #032d60;
+            --text-main: #2D3748;
+            --text-muted: #718096;
+            --sidebar-bg: #F8FAFC;
+            --border-light: #E2E8F0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--text-main);
+            background-color: #E2E8F0;
+            padding: 20px;
+        }
+
+        .resume-page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: white;
+            display: flex;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar {
+            width: 30%;
+            background-color: var(--sidebar-bg);
+            padding: 40px 25px;
+            border-right: 1px solid var(--border-light);
+        }
+
+        .main-content {
+            width: 70%;
+            padding: 40px;
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--dark-blue);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--primary-blue);
+            display: inline-block;
+            padding-bottom: 3px;
+        }
+
+        .contact-item {
+            font-size: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background-color: white;
+            border: 1px solid var(--border-light);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin: 0 4px 8px 0;
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        header {
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--dark-blue);
+        }
+
+        .job-headline {
+            font-size: 18px;
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .experience-item {
+            margin-bottom: 25px;
+        }
+
+        .company-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 8px;
+        }
+
+        /* Logo class removed or kept for safety but unused */
+        .company-logo {
+            display: none;
+        }
+
+        .job-header-text {
+            flex-grow: 1;
+        }
+
+        .job-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--dark-blue);
+        }
+
+        .company-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .date-location {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: right;
+        }
+
+        .job-description {
+            font-size: 13px;
+            line-height: 1.5;
+            margin-left: 0;
+            /* Adjusted from 47px since no logo */
+            margin-top: 5px;
+        }
+
+        .job-description ul {
+            padding-left: 15px;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                background: none;
+            }
+
+            .resume-page {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                min-height: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="resume-page">
+        <aside class="sidebar">
+            <section>
+                <div class="section-title">Contact</div>
+                <div class="contact-item"><span>📞</span> (+1) 555-0123</div>
+                <div class="contact-item"><span>✉️</span> john.doe@example.com</div>
+                <div class="contact-item"><span>📍</span> New York, USA</div>
+                <div class="contact-item"><span>🔗</span> linkedin.com/in/johndoe/</div>
+            </section>
+
+            <section style="margin-top: 30px;">
+                <div class="section-title">Education</div>
+                <div style="margin-bottom: 15px;">
+                    <p style="font-weight: 700; font-size: 12px;">MBA Business Administration</p>
+                    <p style="font-size: 11px; color: var(--text-muted);">Harvard Business School</p>
+                    <p style="font-size: 10px;">2018 - 2020</p>
+                </div>
+                <div>
+                    <p style="font-weight: 700; font-size: 12px;">BS Computer Science</p>
+                    <p style="font-size: 11px; color: var(--text-muted);">MIT</p>
+                    <p style="font-size: 10px;">2014 - 2018</p>
+                </div>
+            </section>
+
+            <section style="margin-top: 30px;">
+                <div class="section-title">Certifications</div>
+                <div style="font-size: 11px; line-height: 1.4;">
+                    <div style="margin-bottom: 8px;">
+                        <span style="color: var(--dark-blue); font-weight: 600;">Salesforce Administrator</span><br>
+                        <span style="color: var(--text-muted); font-size: 10px;">Salesforce</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <span style="color: var(--dark-blue); font-weight: 600;">PMP Project Management</span><br>
+                        <span style="color: var(--text-muted); font-size: 10px;">PMI</span>
+                    </div>
+                </div>
+            </section>
+
+            <section style="margin-top: 30px;">
+                <div class="section-title">Top Skills</div>
+                <div>
+                    {% if top_skills_custom %}
+                    {% for skill in top_skills_custom %}
+                    <span class="skill-tag">{{ skill }}</span>
+                    {% endfor %}
+                    {% else %}
+                    <span class="skill-tag">Salesforce</span>
+                    <span class="skill-tag">Project Management</span>
+                    <span class="skill-tag">CRM Strategy</span>
+                    <span class="skill-tag">Leadership</span>
+                    <span class="skill-tag">Agile</span>
+                    {% endif %}
+                </div>
+            </section>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <h1>John Doe</h1>
+                <p class="job-headline">Senior CRM Manager | Salesforce Expert</p>
+            </header>
+
+            <section>
+                <div class="section-title">Professional Summary</div>
+                <p style="font-size: 13px; line-height: 1.6;">
+                    Experienced CRM professional with over 10 years of experience in managing customer relationships and implementing Salesforce solutions. Proven track record of increasing customer retention and driving revenue growth.
+                </p>
+            </section>
+
+            <section style="margin-top: 30px;">
+                <div class="section-title">Experience</div>
+
+                <!-- Current Job -->
+                <div class="experience-item">
+                    <div class="company-row">
+                        <div class="job-header-text">
+                            <p class="job-title">Senior CRM Manager</p>
+                            <p class="company-name">Tech Solutions Inc.</p>
+                        </div>
+                        <div class="date-location">2022 - Present<br>New York (Remote)</div>
+                    </div>
+                    <div class="job-description">
+                        {% if salesforce_experience_custom %}
+                        <div class="ai-custom-content">
+                            {{ salesforce_experience_custom }}
+                        </div>
+                        {% else %}
+                        <ul>
+                            <li>Led the implementation of Salesforce CRM across the organization.</li>
+                            <li>Managed a team of 5 CRM specialists.</li>
+                            <li>Developed and executed CRM strategies to improve customer engagement.</li>
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Previous Job -->
+                <div class="experience-item">
+                    <div class="company-row">
+                        <div class="job-header-text">
+                            <p class="job-title">CRM Specialist</p>
+                            <p class="company-name">Global Corp</p>
+                        </div>
+                        <div class="date-location">2018 - 2022<br>London, UK</div>
+                    </div>
+                    <div class="job-description">
+                        <ul>
+                            <li>Optimized Salesforce workflows and automated marketing campaigns.</li>
+                            <li>Conducted data analysis to identify customer trends and insights.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>
