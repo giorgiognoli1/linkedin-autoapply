@@ -11,3 +11,10 @@ secrets.py
 config/personals.py
 .venv
 apikeys.py
+.env
+*.backup
+*.bak
+*.tmp
+*.pkl
+*.pdf
+.DS_Store

@@ -23,7 +23,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.action_chains import ActionChains
 
 # Click Functions
-def wait_span_click(driver: WebDriver, text: str, time: float=5.0, click: bool=True, scroll: bool=True, scrollTop: bool=False) -> WebElement | bool:
+def wait_span_click(driver: WebDriver, text: str, time: float=5.0, click: bool=True, scroll: bool=True, scrollTop: bool=False, optional: bool=False) -> WebElement | bool:
     '''
     Finds the span element with the given `text`.
     - Returns `WebElement` if found, else `False` if not found.
@@ -41,7 +41,7 @@ def wait_span_click(driver: WebDriver, text: str, time: float=5.0, click: bool=T
                 buffer(click_gap)
             return button
         except Exception as e:
-            print_lg("Click Failed! Didn't find '"+text+"'")
+            if not optional: print_lg("Click Failed! Didn't find '"+text+"'")
             # print_lg(e)
             return False
 

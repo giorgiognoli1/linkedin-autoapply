@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giorgio Gnoli - Executive Resume</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+
+        :root {
+            --primary-blue: #00A1E0;
+            --dark-blue: #032d60;
+            --text-main: #2D3748;
+            --text-muted: #718096;
+            --sidebar-bg: #F8FAFC;
+            --border-light: #E2E8F0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--text-main);
+            background-color: #E2E8F0;
+            padding: 20px;
+        }
+
+        .resume-page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: white;
+            display: flex;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar {
+            width: 30%;
+            background-color: var(--sidebar-bg);
+            padding: 40px 25px;
+            border-right: 1px solid var(--border-light);
+        }
+
+        .main-content {
+            width: 70%;
+            padding: 40px;
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--dark-blue);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--primary-blue);
+            display: inline-block;
+            padding-bottom: 3px;
+        }
+
+        .contact-item {
+            font-size: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background-color: white;
+            border: 1px solid var(--border-light);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin: 0 4px 8px 0;
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        header {
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--dark-blue);
+        }
+
+        .job-headline {
+            font-size: 18px;
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .experience-item {
+            margin-bottom: 25px;
+        }
+
+        .company-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 8px;
+        }
+
+        /* Logo class removed or kept for safety but unused */
+        .company-logo {
+            display: none;
+        }
+
+        .job-header-text {
+            flex-grow: 1;
+        }
+
+        .job-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--dark-blue);
+        }
+
+        .company-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .date-location {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: right;
+        }
+
+        .job-description {
+            font-size: 13px;
+            line-height: 1.5;
+            margin-left: 0;
+            /* Adjusted from 47px since no logo */
+            margin-top: 5px;
+        }
+
+        .job-description ul {
+            padding-left: 15px;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                background: none;
+            }
+
+            .resume-page {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                min-height: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="resume-page">
+        <aside class="sidebar">
+            <section>
+                <div class="section-title">Contact</div>
+                <div class="contact-item"><span>📞</span> (+39) 320-6134363</div>
+                <div class="contact-item"><span>✉️</span> info@giorgiognoli.it</div>
+                <div class="contact-item"><span>📍</span> Munich / Ancona</div>
+                <div class="contact-item"><span>🔗</span> linkedin.com/in/giorgiognoli/</div>
+            </section>
+
+            <section style="margin-top: 30px;">
+                <div class="section-title">Education</div>
+                <div style="margin-bottom: 15px;">
+                    <p style="font-weight: 700; font-size: 12px;">MBA International Mgmt</p>
+                    <p style="font-size: 11px; color: var(--text-muted);">SDA Bocconi - Milan</p>
+                    <p style="font-size: 10px;">2019 - 2021</p>
+                </div>
+                <div>
+                    <p style="font-weight: 700; font-size: 12px;">MS Marketing Mgmt</p>
+                    <p style="font-size: 11px; color: var(--text-muted);">Bocconi University</p>
+                    <p style="font-size: 10px;">2010 - 2012</p>
+                </div>
+            </section>
+
+            <section style="margin-top: 30px;">
+                <div class="section-title">Certifications</div>
+                <div style="font-size: 11px; line-height: 1.4;">
+                    <div style="margin-bottom: 8px;">
+                        <a href="#" style="color: var(--dark-blue); text-decoration: none; font-weight: 600;">Salesforce
+                            Administrator</a><br>
+                        <span style="color: var(--text-muted); font-size: 10px;">Salesforce</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <a href="#" style="color: var(--dark-blue); text-decoration: none; font-weight: 600;">Marketing
+                            Cloud Consultant</a><br>
+                        <span style="color: var(--text-muted); font-size: 10px;">Salesforce</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <a href="#" style="color: var(--dark-blue); text-decoration: none; font-weight: 600;">Marketing
+                            Cloud Administrator</a><br>
+                        <span style="color: var(--text-muted); font-size: 10px;">Salesforce</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <a href="#" style="color: var(--dark-blue); text-decoration: none; font-weight: 600;">Marketing
+                            Cloud Email Specialist</a><br>
+                        <span style="color: var(--text-muted); font-size: 10px;">Salesforce</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <a href="#" style="color: var(--dark-blue); text-decoration: none; font-weight: 600;">Accredited
+                            Professional: Retail</a><br>
+                        <span style="color: var(--text-muted); font-size: 10px;">Salesforce</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <a href="#" style="color: var(--dark-blue); text-decoration: none; font-weight: 600;">Accredited
+                            Professional: Consumer Goods</a><br>
+                        <span style="color: var(--text-muted); font-size: 10px;">Salesforce</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <a href="#" style="color: var(--dark-blue); text-decoration: none; font-weight: 600;">Accredited
+                            Professional: Automotive</a><br>
+                        <span style="color: var(--text-muted); font-size: 10px;">Salesforce</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <a href="#" style="color: var(--dark-blue); text-decoration: none; font-weight: 600;">Digital
+                            Marketing Certificate</a><br>
+                        <span style="color: var(--text-muted); font-size: 10px;">Growth Tribe</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <a href="#" style="color: var(--dark-blue); text-decoration: none; font-weight: 600;">Growth
+                            Strategies</a><br>
+                        <span style="color: var(--text-muted); font-size: 10px;">Growth Tribe</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <a href="#" style="color: var(--dark-blue); text-decoration: none; font-weight: 600;">Excellence
+                            Qualified CMO</a><br>
+                        <span style="color: var(--text-muted); font-size: 10px;">Mercedes-Benz Italia</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <a href="#" style="color: var(--dark-blue); text-decoration: none; font-weight: 600;">Inbound
+                            Certified</a><br>
+                        <span style="color: var(--text-muted); font-size: 10px;">HubSpot Academy</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <a href="#"
+                            style="color: var(--dark-blue); text-decoration: none; font-weight: 600;">Certificazione
+                            Google Analytics</a><br>
+                        <span style="color: var(--text-muted); font-size: 10px;">Google</span>
+                    </div>
+                </div>
+            </section>
+
+            <section style="margin-top: 30px;">
+                <div class="section-title">Top Skills</div>
+                <div>
+                    
+                    <span class="skill-tag">Salesforce MC</span>
+                    <span class="skill-tag">CRM Strategy</span>
+                    <span class="skill-tag">HubSpot</span>
+                    <span class="skill-tag">Loyalty Mgmt</span>
+                    <span class="skill-tag">CDP</span>
+                    <span class="skill-tag">Digital Transformation</span>
+                    
+                </div>
+            </section>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <h1>Giorgio Gnoli</h1>
+                <p class="job-headline">CRM & CX Leader | Salesforce Expert</p>
+            </header>
+
+            <section>
+                <div class="section-title">Professional Summary</div>
+                <p style="font-size: 13px; line-height: 1.6;">
+                    Strategic CRM & CX leader with 15+ years of success in global digital transformation. Expert in
+                    building and leading high-performing teams to deliver AI-driven personalization and loyalty programs
+                    across 14+ countries.
+                </p>
+            </section>
+
+            <section style="margin-top: 30px;">
+                <div class="section-title">Experience</div>
+
+                <!-- Belron -->
+                <div class="experience-item">
+                    <div class="company-row">
+                        <div class="job-header-text">
+                            <p class="job-title">Salesforce Customer Communications Manager</p>
+                            <p class="company-name">Belron International</p>
+                        </div>
+                        <div class="date-location">2023 - Present<br>UK (Remote)</div>
+                    </div>
+                    <div class="job-description">
+                        <ul>
+                            <li>Leading CX strategy and CRM tools integration (Salesforce, HubSpot) globally.</li>
+                            <li>Managing a global community of 46+ professionals.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Salesforce -->
+                <div class="experience-item">
+                    <div class="company-row">
+                        <div class="job-header-text">
+                            <p class="job-title">Marketing Cloud Solution Engineer</p>
+                            <p class="company-name">Salesforce</p>
+                        </div>
+                        <div class="date-location">2021 - 2024<br>Milan (Remote)</div>
+                    </div>
+                    <div class="job-description">
+                        
+                        <ul>
+                            <li>Subject Matter Expert in Loyalty Management, CDP, and Marketing Cloud Personalization.
+                            </li>
+                            <li>Supported major accounts in Automotive and Luxury sectors in digital strategy.</li>
+                            <li>Key speaker at Salesforce World Tour and international events.</li>
+                        </ul>
+                        
+                    </div>
+                </div>
+
+                <!-- Fater -->
+                <div class="experience-item">
+                    <div class="company-row">
+                        <div class="job-header-text">
+                            <p class="job-title">Strategic Innovation & Digital PM</p>
+                            <p class="company-name">Fater Spa (P&G JV)</p>
+                        </div>
+                        <div class="date-location">2019 - 2021<br>Italy</div>
+                    </div>
+                    <div class="job-description">
+                        <ul>
+                            <li>Managed digital marketing and CRM for the baby-care category (€1M budget).</li>
+                            <li>Integrated Salesforce tools to drive digital loyalty growth.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- DiBa -->
+                <div class="experience-item">
+                    <div class="company-row">
+                        <div class="job-header-text">
+                            <p class="job-title">CMO & CRM</p>
+                            <p class="company-name">Gruppo DiBa Spa</p>
+                        </div>
+                        <div class="date-location">2015 - 2019<br>Italy</div>
+                    </div>
+                    <div class="job-description">
+                        <ul>
+                            <li>Scaled lead generation 100x via innovative digital campaigns.</li>
+                            <li>Built the Business Development department from the ground up, leading 13 people.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Indeed -->
+                <div class="experience-item">
+                    <div class="company-row">
+                        <div class="job-header-text">
+                            <p class="job-title">Country Manager Italy</p>
+                            <p class="company-name">Indeed</p>
+                        </div>
+                        <div class="date-location">2013 - 2014<br>Austin / Milan</div>
+                    </div>
+                    <div class="job-description">
+                        <ul>
+                            <li>Launched and managed Indeed's operations in Italy.</li>
+                            <li>Driving market entry and growth strategy.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>

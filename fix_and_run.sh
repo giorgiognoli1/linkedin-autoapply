@@ -1,16 +1,16 @@
-search_terms = [
-    "Salesforce Contractor",
-    "Salesforce Freelancer"
-]
-search_location = "United States"
+#!/bin/bash
+
+# Fix search.py - NESSUN filtro
+cat > config/search.py << 'SEARCH'
+search_terms = ["Salesforce Director", "CRM Director"]
+search_location = ""
 switch_number = 30
 randomize_search_order = False
 sort_by = ""
-date_posted = "Past 24 hours"
+date_posted = ""
 salary = ""
 easy_apply_only = True
-job_types = []
-experience_level = ["Mid-Senior level", "Director", "Executive"]
+experience_level = []
 job_type = []
 on_site = []
 companies = []
@@ -30,9 +30,10 @@ bad_words = []
 security_clearance = False
 did_masters = True
 current_experience = 15
+SEARCH
 
+# Verifica che secrets.py abbia le credenziali
+grep -q "giorgiognoli@gmail.com" config/secrets.py && echo "✓ Credenziali OK" || echo "✗ Credenziali mancanti"
 
-# Personal work location
-work_location = "Ancona, Italy"
-
-remote_only = "True"
+# Lancia bot
+python3 runAiBot.py

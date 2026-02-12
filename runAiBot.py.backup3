@@ -37,28 +37,8 @@ from config.questions import *
 from config.search import *
 from config.secrets import use_AI, username, password, ai_provider
 from config.settings import *
-from config.settings import max_applications_per_run
 
 from modules.open_chrome import *
-
-# ============================================================================
-# PAUSA LOGIN MANUALE RIMOSSA PER AUTOMAZIONE
-# ============================================================================
-import time
-print("\n🚀 Avvio automatico richiesto...")
-# Naviga a LinkedIn
-try:
-    from modules.open_chrome import driver
-    driver.get("https://www.linkedin.com")
-    time.sleep(2)
-except:
-    pass
-# print("\n✅ Chrome aperto, procedo con login automatico...")
-# ============================================================================
-
-
-
-
 from modules.helpers import *
 from modules.clickers_and_finders import *
 from modules.validator import validate_config
@@ -67,8 +47,6 @@ if use_AI:
     from modules.ai.openaiConnections import ai_create_openai_client, ai_extract_skills, ai_answer_question, ai_close_openai_client
     from modules.ai.deepseekConnections import deepseek_create_client, deepseek_extract_skills, deepseek_answer_question
     from modules.ai.geminiConnections import gemini_create_client, gemini_extract_skills, gemini_answer_question
-    from modules.resumes.resume_generator import generate_custom_resume
-    from modules.resumes.application_tracker import log_application
 
 from typing import Literal
 
@@ -125,50 +103,58 @@ about_company_for_ai = None # TODO extract about company for AI
 def is_logged_in_LN() -> bool:
     '''
     Function to check if user is logged-in in LinkedIn
+    * Returns: `True` if user is logged-in or `False` if not
     '''
-    if "linkedin.com/feed" in driver.current_url: return True
-    try:
-        # Check for global nav which appears after login
-        driver.find_element(By.CLASS_NAME, "global-nav__me")
-        return True
-    except:
-        pass
-    return False
+    if driver.current_url == "https://www.linkedin.com/feed/": return True
+    if try_linkText(driver, "Sign in"): return False
+    if try_xp(driver, '//button[@type="submit" and contains(text(), "Sign in")]'):  return False
+    if try_linkText(driver, "Join now"): return False
+    print_lg("Didn't find Sign in link, so assuming user is logged in!")
+    return True
 
 
 def login_LN() -> None:
     '''
     Function to login for LinkedIn
+    * Tries to login using given `username` and `password` from `secrets.py`
+    * If failed, tries to login using saved LinkedIn profile button if available
+    * If both failed, asks user to login manually
     '''
-    print_lg("🔐 Inizio login automatico...")
+    # Find the username and password fields and fill them with user credentials
     driver.get("https://www.linkedin.com/login")
-    time.sleep(3)
-
-    from config.secrets import username, password
+    from linkedin_login_fix_v2 import fix_linkedin_login
+    from config.secrets import email, password
+    fix_linkedin_login(driver, email, password)
     try:
-        # Trova campi e inserisci
-        u_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "username")))
-        u_field.clear()
-        u_field.send_keys(username)
-        
-        p_field = driver.find_element(By.ID, "password")
-        p_field.clear()
-        p_field.send_keys(password)
-        
-        time.sleep(1)
-        driver.find_element(By.XPATH, '//button[@type="submit"]').click()
-        time.sleep(5)
+        wait.until(EC.presence_of_element_located((By.LINK_TEXT, "Forgot password?")))
+        try:
+            text_input_by_ID(driver, "username", username, 1)
+        except Exception as e:
+            print_lg("Couldn't find username field.")
+            # print_lg(e)
+        try:
+            text_input_by_ID(driver, "password", password, 1)
+        except Exception as e:
+            print_lg("Couldn't find password field.")
+            # print_lg(e)
+        # Find the login submit button and click it
+        driver.find_element(By.XPATH, '//button[@type="submit" and contains(text(), "Sign in")]').click()
+    except Exception as e1:
+        try:
+            profile_button = find_by_class(driver, "profile__details")
+            profile_button.click()
+        except Exception as e2:
+            # print_lg(e1, e2)
+            print_lg("Couldn't Login!")
+
+    try:
+        # Wait until successful redirect, indicating successful login
+        wait.until(EC.url_to_be("https://www.linkedin.com/feed/")) # wait.until(EC.presence_of_element_located((By.XPATH, '//button[normalize-space(.)="Start a post"]')))
+        return print_lg("Login successful!")
     except Exception as e:
-        print_lg(f"⚠️ Errore durante inserimento credenziali: {e}")
-
-    if is_logged_in_LN():
-        print_lg("✅ Login effettuato con successo!")
-    else:
-        print_lg("❌ Login fallito o richiesta verifica (CAPTCHA/2FA).")
-        # In caso di CAPTCHA non possiamo fare molto se non aspettare l'utente, 
-        # ma l'utente ha chiesto di fare tutto noi. Proviamo a vedere se siamo su feed.
-        time.sleep(10) # Diamo tempo per eventuale redirect automatico
-
+        print_lg("Seems like login attempt failed! Possibly due to wrong credentials or already logged in! Try logging in manually!")
+        # print_lg(e)
+        manual_login_retry(is_logged_in_LN, 2)
 #>
 
 
@@ -197,30 +183,19 @@ def set_search_location() -> None:
     if search_location.strip():
         try:
             print_lg(f'Setting search location as: "{search_location.strip()}"')
-            # Provo più varianti del selettore location
-            search_location_ele = try_xp(driver, ".//input[@aria-label='City, state, or zip code' and not(@disabled)]", False) or \
-                                  try_xp(driver, ".//input[@aria-label='Location' and not(@disabled)]", False) or \
-                                  try_xp(driver, ".//input[contains(@id, 'jobs-search-box-location')]", False)
-            
-            if search_location_ele:
-                text_input(actions, search_location_ele, search_location, "Search Location")
-            else:
-                # Fallback TAB-TAB
-                print_lg("Selettore location non trovato, provo fallback TAB...")
-                try_xp(driver, ".//label[contains(@class, 'jobs-search-box__keywords-label')]")
-                actions.send_keys(Keys.TAB, Keys.TAB).perform()
-                actions.key_down(Keys.CONTROL).send_keys("a").key_up(Keys.CONTROL).perform()
-                actions.send_keys(search_location.strip()).perform()
-                sleep(2)
-                actions.send_keys(Keys.ENTER).perform()
+            search_location_ele = try_xp(driver, ".//input[@aria-label='City, state, or zip code'and not(@disabled)]", False) #  and not(@aria-hidden='true')]")
+            text_input(actions, search_location_ele, search_location, "Search Location")
+        except ElementNotInteractableException:
+            try_xp(driver, ".//label[@class='jobs-search-box__input-icon jobs-search-box__keywords-label']")
+            actions.send_keys(Keys.TAB, Keys.TAB).perform()
+            actions.key_down(Keys.CONTROL).send_keys("a").key_up(Keys.CONTROL).perform()
+            actions.send_keys(search_location.strip()).perform()
+            sleep(2)
+            actions.send_keys(Keys.ENTER).perform()
+            try_xp(driver, ".//button[@aria-label='Cancel']")
         except Exception as e:
-            try:
-                # Prova metodo alternativo: clicca su icona ricerca o aspetta più tempo
-                cancel_btn = try_xp(driver, ".//button[@aria-label='Cancel']", False)
-                if cancel_btn: cancel_btn.click()
-                print_lg("Failed to update search location, skipping error and continuing...")
-            except:
-                pass
+            try_xp(driver, ".//button[@aria-label='Cancel']")
+            print_lg("Failed to update search location, continuing with default location!", e)
 
 
 def apply_filters() -> None:
@@ -271,9 +246,6 @@ def apply_filters() -> None:
         show_results_button: WebElement = driver.find_element(By.XPATH, '//button[contains(@aria-label, "Apply current filters to show")]')
         show_results_button.click()
 
-        # Rimosso filtro Contract forzato e rumoroso
-        
-        
         global pause_after_filters
         if pause_after_filters and "Turn off Pause after search" == pyautogui.confirm("These are your configured search results and filter. It is safe to change them while this dialog is open, any changes later could result in errors and skipping this search run.", "Please check your results", ["Turn off Pause after search", "Look's good, Continue"]):
             pause_after_filters = False
@@ -342,16 +314,10 @@ def get_job_main_details(job: WebElement, blacklisted_companies: set, rejected_j
     try: 
         if not skip: job_details_button.click()
     except Exception as e:
-        if "click intercepted" in str(e).lower():
-            print_lg("Click intercettato da una modale. Tentativo di chiusura...")
-            discard_job()
-            try:
-                job_details_button.click()
-            except:
-                print_lg(f'Failed to click "{title} | {company}" job on details button after discard. Job ID: {job_id}!')
-        else:
-            print_lg(f'Failed to click "{title} | {company}" job on details button. Job ID: {job_id}!') 
-            # discard_job()
+        print_lg(f'Failed to click "{title} | {company}" job on details button. Job ID: {job_id}!') 
+        # print_lg(e)
+        discard_job()
+        job_details_button.click() # To pass the error outside
     buffer(click_gap)
     return (job_id,title,company,work_location,work_style,skip)
 
@@ -839,7 +805,7 @@ def failed_job(job_id: str, job_link: str, resume: str, date_listed, error: str,
             file.close()
     except Exception as e:
         print_lg("Failed to update failed jobs list!", e)
-        # pyautogui.alert("Failed to update the excel of failed jobs!\nProbably because of 1 of the following reasons:\n1. The file is currently open or in use by another program\n2. Permission denied to write to the file\n3. Failed to find the file", "Failed Logging")
+        pyautogui.alert("Failed to update the excel of failed jobs!\nProbably because of 1 of the following reasons:\n1. The file is currently open or in use by another program\n2. Permission denied to write to the file\n3. Failed to find the file", "Failed Logging")
 
 
 def screenshot(driver: WebDriver, job_id: str, failedAt: str) -> str:
@@ -877,27 +843,14 @@ def submitted_jobs(job_id: str, title: str, company: str, work_location: str, wo
         csv_file.close()
     except Exception as e:
         print_lg("Failed to update submitted jobs list!", e)
-        # pyautogui.alert("Failed to update the excel of applied jobs!\nProbably because of 1 of the following reasons:\n1. The file is currently open or in use by another program\n2. Permission denied to write to the file\n3. Failed to find the file", "Failed Logging")
+        pyautogui.alert("Failed to update the excel of applied jobs!\nProbably because of 1 of the following reasons:\n1. The file is currently open or in use by another program\n2. Permission denied to write to the file\n3. Failed to find the file", "Failed Logging")
 
 
 
 # Function to discard the job application
 def discard_job() -> None:
-    print_lg("Tentativo di chiusura modale/discard...")
-    try:
-        actions.send_keys(Keys.ESCAPE).perform()
-        time.sleep(1)
-        # Prova a trovare il bottone di chiusura (X) della modale LinkedIn
-        close_button = try_xp(driver, "//button[@aria-label='Dismiss']", False) or try_xp(driver, "//button[contains(@class, 'artdeco-modal__dismiss')]", False)
-        if close_button:
-            close_button.click()
-            time.sleep(1)
-    except:
-        pass
-    
-    # Conferma eventuale discard
-    wait_span_click(driver, 'Discard', 1)
-    print_lg("Modale chiusa (se presente).")
+    actions.send_keys(Keys.ESCAPE).perform()
+    wait_span_click(driver, 'Discard', 2)
 
 
 
@@ -914,11 +867,7 @@ def apply_to_jobs(search_terms: list[str]) -> None:
 
     if randomize_search_order:  shuffle(search_terms)
     for searchTerm in search_terms:
-        driver.get(f"https://www.linkedin.com/jobs/search/?keywords={searchTerm}&location=Germany&f_AL=true&sortBy=R")
-        try:
-            from config.secrets import username, password
-        except Exception as e:
-            print(f"⚠️ Login fix: {e}")
+        driver.get(f"https://www.linkedin.com/jobs/search/?keywords={searchTerm}")
         print_lg("\n________________________________________________________________________________________________________________________\n")
         print_lg(f'\n>>>> Now searching for "{searchTerm}" <<<<\n\n')
 
@@ -1053,21 +1002,9 @@ def apply_to_jobs(search_terms: list[str]) -> None:
                                 errored = ""
                                 modal = find_by_class(driver, "jobs-easy-apply-modal")
                                 wait_span_click(modal, "Next", 1)
-                                
-                                # === AI RESUME GENERATION ===
+                                # if description != "Unknown":
+                                #     resume = create_custom_resume(description)
                                 resume = "Previous resume"
-                                custom_resume_path = ""
-                                if use_AI and description != "Unknown":
-                                    try:
-                                        custom_resume_path = generate_custom_resume(title, description, company)
-                                        if custom_resume_path:
-                                            resume = custom_resume_path
-                                            print_lg(f"✅ Using AI-generated resume: {resume}")
-                                    except Exception as e:
-                                        print_lg(f"⚠️ AI resume generation failed, using default: {e}")
-                                        custom_resume_path = ""
-                                # === END AI RESUME GENERATION ===
-                                
                                 next_button = True
                                 questions_list = set()
                                 next_counter = 0
@@ -1084,10 +1021,7 @@ def apply_to_jobs(search_terms: list[str]) -> None:
                                         errored = "stuck"
                                         raise Exception("Seems like stuck in a continuous loop of next, probably because of new questions.")
                                     questions_list = answer_questions(modal, questions_list, work_location, job_description=description)
-                                    # Upload custom resume if available, otherwise use default
-                                    if useNewResume and not uploaded:
-                                        resume_to_upload = custom_resume_path if custom_resume_path else default_resume_path
-                                        uploaded, resume = upload_resume(modal, resume_to_upload)
+                                    if useNewResume and not uploaded: uploaded, resume = upload_resume(modal, default_resume_path)
                                     try: next_button = modal.find_element(By.XPATH, './/span[normalize-space(.)="Review"]') 
                                     except NoSuchElementException:  next_button = modal.find_element(By.XPATH, './/button[contains(span, "Next")]')
                                     try: next_button.click()
@@ -1099,25 +1033,17 @@ def apply_to_jobs(search_terms: list[str]) -> None:
                                 if questions_list and errored != "stuck": 
                                     print_lg("Answered the following questions...", questions_list)
                                     print("\n\n" + "\n".join(str(question) for question in questions_list) + "\n\n")
-                                wait_span_click(driver, "Review", 1, scrollTop=True, optional=True)
+                                wait_span_click(driver, "Review", 1, scrollTop=True)
                                 cur_pause_before_submit = pause_before_submit
-                                Decision_made = False
                                 if errored != "stuck" and cur_pause_before_submit:
                                     decision = pyautogui.confirm('1. Please verify your information.\n2. If you edited something, please return to this final screen.\n3. DO NOT CLICK "Submit Application".\n\n\n\n\nYou can turn off "Pause before submit" setting in config.py\nTo TEMPORARILY disable pausing, click "Disable Pause"', "Confirm your information",["Disable Pause", "Discard Application", "Submit Application"])
-                                    if decision == "Discard Application":
-                                        discard_job()
-                                        Decision_made = True
-                                    elif decision == "Submit Application":
-                                        Decision_made = True
-                                    elif decision == "Disable Pause":
-                                        pause_before_submit = False
-                                        Decision_made = True
-                            
-                                if errored != "stuck" and not Decision_made:
-                                    wait_span_click(driver, "Submit application", 2, optional=True)
-                                    Decision_made = True
+                                    if decision == "Discard Application": raise Exception("Job application discarded by user!")
+                                    pause_before_submit = False if "Disable Pause" == decision else True
+                                    # try_xp(modal, ".//span[normalize-space(.)='Review']")
+                                follow_company(modal)
+                                if wait_span_click(driver, "Submit application", 2, scrollTop=True): 
                                     date_applied = datetime.now()
-                                    wait_span_click(driver, "Done", 2, optional=True)
+                                    if not wait_span_click(driver, "Done", 2): actions.send_keys(Keys.ESCAPE).perform()
                                 elif errored != "stuck" and cur_pause_before_submit and "Yes" in pyautogui.confirm("You submitted the application, didn't you 😒?", "Failed to find Submit Application!", ["Yes", "No"]):
                                     date_applied = datetime.now()
                                     wait_span_click(driver, "Done", 2)
@@ -1145,35 +1071,12 @@ def apply_to_jobs(search_terms: list[str]) -> None:
                         if skip: continue
 
                     submitted_jobs(job_id, title, company, work_location, work_style, description, experience_required, skills, hr_name, hr_link, resume, reposted, date_listed, date_applied, job_link, application_link, questions_list, connect_request)
-                    
-                    # === EXCEL LOGGING ===
-                    if use_AI and date_applied != "Pending":
-                        try:
-                            log_application(title, company, date_applied, resume, job_link)
-                        except Exception as e:
-                            print_lg(f"⚠️ Excel logging failed: {e}")
-                    # === END EXCEL LOGGING ===
-                    
                     if uploaded:   useNewResume = False
 
                     print_lg(f'Successfully saved "{title} | {company}" job. Job ID: {job_id} info')
                     current_count += 1
-                    if application_link == "Easy Applied": 
-                        easy_applied_count += 1
-                        if easy_applied_count >= max_applications_per_run:
-                            print_lg(f"🛑 Raggiunto il limite giornaliero di {max_applications_per_run} candidature!")
-                            current_count = -1
-                            break
-                    
-                    # === DELAY "UMANO" TRA CANDIDATURE ===
-                    import time
-                    import random
-                    delay = 5  # secondi pausa
-                    print_lg(f"⏳ Pausa di {delay} secondi prima della prossima candidatura (per sembrare umano)...")
-                    time.sleep(delay)
-                    # === FINE DELAY ===
-                    
-                    if application_link != "Easy Applied":   external_jobs_count += 1
+                    if application_link == "Easy Applied": easy_applied_count += 1
+                    else:   external_jobs_count += 1
                     applied_jobs.add(job_id)
 
 
@@ -1227,28 +1130,12 @@ linkedIn_tab = False
 def main() -> None:
     try:
         global linkedIn_tab, tabs_count, useNewResume, aiClient
-        
-        # Override location from CLI args
-        import argparse
-        parser = argparse.ArgumentParser()
-        parser.add_argument("--location", help="Override search location")
-        args, _ = parser.parse_known_args()
-        
-        if args.location:
-            import config.search
-            config.search.search_location = args.location
-            # Also update global variable in this module if it was already imported
-            global search_location
-            search_location = args.location
-            print_lg(f"🌍 Location overridden to: {search_location}")
-
         alert_title = "Error Occurred. Closing Browser!"
         total_runs = 1        
         validate_config()
         
         if not os.path.exists(default_resume_path):
-            # pyautogui.alert(text='Your default resume "{}" is missing! Please update it\'s folder path "default_resume_path" in config.py\n\nOR\n\nAdd a resume with exact name and path (check for spelling mistakes including cases).\n\n\nFor now the bot will continue using your previous upload from LinkedIn!'.format(default_resume_path), title="Missing Resume", button="OK")
-            print_lg(f"Resume missing at {default_resume_path}")
+            pyautogui.alert(text='Your default resume "{}" is missing! Please update it\'s folder path "default_resume_path" in config.py\n\nOR\n\nAdd a resume with exact name and path (check for spelling mistakes including cases).\n\n\nFor now the bot will continue using your previous upload from LinkedIn!'.format(default_resume_path), title="Missing Resume", button="OK")
             useNewResume = False
         
         # Login to LinkedIn
@@ -1308,7 +1195,7 @@ def main() -> None:
         print_lg("Browser window closed or session is invalid. Exiting.", e)
     except Exception as e:
         critical_error_log("In Applier Main", e)
-        # pyautogui.alert(e,alert_title)
+        pyautogui.alert(e,alert_title)
     finally:
         print_lg("\n\nTotal runs:                     {}".format(total_runs))
         print_lg("Jobs Easy Applied:              {}".format(easy_applied_count))
@@ -1333,11 +1220,11 @@ def main() -> None:
             "The only limit to our realization of tomorrow will be our doubts of today. - Franklin D. Roosevelt"
             ])
         msg = f"\n{quote}\n\n\nBest regards,\nSai Vignesh Golla\nhttps://www.linkedin.com/in/saivigneshgolla/\n\n"
-        # pyautogui.alert(msg, "Exiting..")
+        pyautogui.alert(msg, "Exiting..")
         print_lg(msg,"Closing the browser...")
         if tabs_count >= 10:
             msg = "NOTE: IF YOU HAVE MORE THAN 10 TABS OPENED, PLEASE CLOSE OR BOOKMARK THEM!\n\nOr it's highly likely that application will just open browser and not do anything next time!" 
-            # pyautogui.alert(msg,"Info")
+            pyautogui.alert(msg,"Info")
             print_lg("\n"+msg)
         ##> ------ Yang Li : MARKYangL - Feature ------
         if use_AI and aiClient:

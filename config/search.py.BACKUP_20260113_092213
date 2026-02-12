@@ -1,15 +1,26 @@
 search_terms = [
-    "Salesforce Contractor",
-    "Salesforce Freelancer"
+    "Salesforce",
+    "Salesforce remote Asia",
+    "Salesforce Developer",
+    "Salesforce Architect",
+    "Salesforce Marketing Cloud",
+    "Marketing Cloud",
+    "Loyalty Management Salesforce",
+    "Salesforce Apex",
+    "Apex Developer",
+    "Salesforce Technical Lead",
+    "Salesforce Solution Architect",
+    "CRM Director remote Asia",
+    "Salesforce Director APAC"
 ]
-search_location = "United States"
+search_location = "South Asia"
 switch_number = 30
 randomize_search_order = False
 sort_by = ""
-date_posted = "Past 24 hours"
+date_posted = "Past week"
 salary = ""
 easy_apply_only = True
-job_types = []
+job_types = ["Contract", "Full-time"]
 experience_level = ["Mid-Senior level", "Director", "Executive"]
 job_type = []
 on_site = []
@@ -34,5 +45,3 @@ current_experience = 15
 
 # Personal work location
 work_location = "Ancona, Italy"
-
-remote_only = "True"

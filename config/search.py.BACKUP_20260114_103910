@@ -1,15 +1,28 @@
 search_terms = [
-    "Salesforce Contractor",
-    "Salesforce Freelancer"
+    "Salesforce contract remote UK",
+    "Salesforce freelance remote UK",
+    "Salesforce developer contract UK",
+    "Salesforce consultant contract UK",
+    "Salesforce architect contract UK",
+    "Salesforce Marketing Cloud contract UK",
+    "Marketing Cloud consultant contract UK",
+    "Apex developer contract UK",
+    "Loyalty Management Salesforce contract UK",
+    "outside IR35 Salesforce",
+    "inside IR35 Salesforce",
+    "Salesforce day rate contract",
+    "Salesforce contractor London remote",
 ]
-search_location = "United States"
+search_location = "United Kingdom"
 switch_number = 30
 randomize_search_order = False
 sort_by = ""
-date_posted = "Past 24 hours"
+date_posted = "Past week"
 salary = ""
 easy_apply_only = True
-job_types = []
+job_types = [
+    "Contract",
+]
 experience_level = ["Mid-Senior level", "Director", "Executive"]
 job_type = []
 on_site = []

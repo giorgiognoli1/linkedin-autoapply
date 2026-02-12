@@ -54,13 +54,13 @@ try:
         # except (FileNotFoundError, PermissionError) as e: 
         #     print_lg("(Undetected Mode) Got '{}' when using pre-installed ChromeDriver.".format(type(e).__name__)) 
             print_lg("Downloading Chrome Driver... This may take some time. Undetected mode requires download every run!")
-            driver = uc.Chrome(options=options, version_main=144)
+            driver = uc.Chrome(options=options)
     else: driver = webdriver.Chrome(options=options) #, service=Service(executable_path="C:\\Program Files\\Google\\Chrome\\chromedriver-win64\\chromedriver.exe"))
     driver.maximize_window()
     
     # === TIMEOUT AUMENTATI PER EVITARE STALE ELEMENT ===
-    driver.implicitly_wait(10)  # Aspetta fino a 15 secondi per trovare elementi
-    driver.set_page_load_timeout(60)  # 90 secondi per caricare pagine
+    driver.implicitly_wait(5)  # Aspetta fino a 15 secondi per trovare elementi
+    driver.set_page_load_timeout(30)  # 90 secondi per caricare pagine
     # ===================================================
     
     wait = WebDriverWait(driver, 5)
